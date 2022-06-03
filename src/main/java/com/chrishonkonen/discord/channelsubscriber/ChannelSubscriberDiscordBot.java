@@ -24,6 +24,7 @@ public class ChannelSubscriberDiscordBot {
 	) {
 		this.token = token;
 		this.discordClient()
+
 			.withGateway(client -> {
 				Mono<Void> onCreateMessage = client.on(MessageCreateEvent.class, messageCreateEventListener::handle).then();
 				Mono<Void> onReactionAdd = client.on(ReactionAddEvent.class, reactionAddEventListener::handle).then();
