@@ -8,6 +8,8 @@ import discord4j.core.DiscordClientBuilder;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.event.domain.message.ReactionAddEvent;
 import discord4j.core.event.domain.message.ReactionRemoveEvent;
+import discord4j.gateway.intent.Intent;
+import discord4j.gateway.intent.IntentSet;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -23,8 +25,10 @@ public class ChannelSubscriberDiscordBot {
 		ReactionRemoveEventListener reactionRemoveEventListener
 	) {
 		this.token = token;
-		this.discordClient()
-
+		DiscordClient
+			.create(token)
+			.gateway()
+			.setEnabledIntents(IntentSet.all())
 			.withGateway(client -> {
 				Mono<Void> onCreateMessage = client.on(MessageCreateEvent.class, messageCreateEventListener::handle).then();
 				Mono<Void> onReactionAdd = client.on(ReactionAddEvent.class, reactionAddEventListener::handle).then();
@@ -33,7 +37,4 @@ public class ChannelSubscriberDiscordBot {
 			}).block();
 	}
 
-	private DiscordClient discordClient() {
-		return DiscordClientBuilder.create(token).build();
-	}
 }

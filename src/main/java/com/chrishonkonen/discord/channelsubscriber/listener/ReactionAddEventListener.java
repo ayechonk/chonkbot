@@ -1,30 +1,46 @@
 package com.chrishonkonen.discord.channelsubscriber.listener;
 
+import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.message.ReactionAddEvent;
+import discord4j.core.object.entity.Member;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 @Component
 public class ReactionAddEventListener {
 	private static final Logger LOG = LoggerFactory.getLogger(ReactionAddEventListener.class);
 
-	public Mono<Void> handle(ReactionAddEvent reactionAddEvent) {
-		return
-			Mono.just(reactionAddEvent)
-				.filter(this::isCorrectMessage)
-				.flatMap(this::logMessage)
-				.then();
+//	TODO: move this to a repository of some sort.
+	private static final Map<String, Long> emojiRoleMap = Collections.synchronizedMap(new HashMap<>());
+
+	static {
+		emojiRoleMap.put("👍", 982449009278996491L);
 	}
 
-	private Mono<Void> logMessage(ReactionAddEvent reactionAddEvent) {
-		return Mono.just(reactionAddEvent)
-			.flatMap(ReactionAddEvent::getUser)
-			.flatMap(user -> {
-				LOG.info("{} was added by {}", reactionAddEvent.getEmoji().asEmojiData().name(), user.getUsername());
+	public Mono<Void> handle(ReactionAddEvent reactionAddEvent) {
+		return Mono
+			.just(reactionAddEvent)
+			.filter(this::isCorrectMessage)
+			.flatMap(r -> Mono.just(Objects.requireNonNull(r.getMember().orElse(null))))
+			.zipWith(Mono.just(Objects.requireNonNull(reactionAddEvent.getEmoji().asEmojiData().name().orElse(null))))
+			.flatMap(objects -> {
+				final Member t1 = objects.getT1();
+				final String emojiName = objects.getT2();
+				Long roleId = emojiRoleMap.get(emojiName);
+				if (roleId != null) {
+					LOG.info("{} was added by {}", emojiName, t1.getUsername());
+					return t1.addRole(Snowflake.of(roleId));
+				}
 				return Mono.empty();
-			});
+			})
+			.then();
 	}
 
 	private boolean isCorrectMessage(ReactionAddEvent reactionAddEvent) {
