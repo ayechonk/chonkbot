@@ -51,6 +51,6 @@ public class ReactionAddEventListener {
 	}
 
 	private boolean isCorrectMessage(ReactionAddEvent reactionAddEvent) {
-		return reactionAddEvent.getMessageId().asLong() == this.botSettings.subscriptionMessageId();
+		return reactionAddEvent.getMessageId().asLong() == this.botSettings.getSubscriptionMessageId();
 	}
 }

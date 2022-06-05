@@ -63,6 +63,6 @@ public class ReactionRemoveEventListener {
 	}
 
 	private boolean isCorrectMessage(ReactionRemoveEvent reactionRemoveEvent) {
-		return reactionRemoveEvent.getMessageId().asLong() == this.botSettings.subscriptionMessageId();
+		return reactionRemoveEvent.getMessageId().asLong() == this.botSettings.getSubscriptionMessageId();
 	}
 }

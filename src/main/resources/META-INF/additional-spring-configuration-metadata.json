@@ -1,1 +1,14 @@
-{ "properties": [ ] }
+{
+  "properties": [
+    {
+      "name": "bot.subscriptionMessageId",
+      "type": "java.lang.String",
+      "description": "Description for bot.subscriptionMessageId."
+    },
+    {
+      "name": "bot.token",
+      "type": "java.lang.Long",
+      "description": "Description for bot.token."
+    }
+  ]
+}
