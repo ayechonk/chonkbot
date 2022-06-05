@@ -3,28 +3,55 @@ package com.chrishonkonen.discord.channelsubscriber.listener;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 @Component
 public class MessageCreateEventListener {
+	private static final Logger LOG = LoggerFactory.getLogger(MessageCreateEventListener.class);
+	private final Map<String, Function2<Message, String[], Mono<Message>>> mapOfCommands;
+
+	public MessageCreateEventListener() {
+		this.mapOfCommands = Collections.synchronizedMap(new HashMap<>());
+		this.mapOfCommands.put("addMsg", this::addMessage);
+	}
+
 
 	public Mono<Void> handle(MessageCreateEvent messageCreateEvent) {
+		LOG.info("Handling MessageCreateEvent");
 		return Mono.just(messageCreateEvent.getMessage())
-			.filter(message -> !message.getContent().isBlank())
-			.filter(message -> !this.isBotAuthor(message))
-			.flatMap(this::handleMessage)
+			.filter(message -> !message.getContent().isBlank() && this.hasPrefix(message.getContent()) && !this.isBotAuthor(message))
+			.zipWhen(message -> {
+				String[] parts = message.getContent().split(" ");
+				final String command = parts[1];
+				Function2<Message, String[], Mono<Message>> fn = this.mapOfCommands.get(command);
+				if (fn == null) {
+					return this.commandInvalid(message, command);
+				} else {
+					return fn.apply(message, parts);
+				}
+			})
 			.then();
 	}
 
-	private Mono<Void> handleMessage(Message message) {
-		String response;
-		if ("!ping".equals(message.getContent())) {
-			response = "pong";
-		} else {
-			response = null;
-		}
-		return message.getChannel().flatMap(messageChannel -> messageChannel.createMessage(response)).then();
+	private Mono<Message> commandInvalid(Message message, String invalidCommand) {
+		LOG.info("Not a valid command: {}", invalidCommand);
+		return message.getChannel().flatMap(messageChannel -> messageChannel.createMessage("Not a valid command."));
+	}
+
+	private Mono<Message> addMessage(Message message, String[] args) {
+		LOG.info("Adding message {} to be watched.", args[1]);
+		return message.getChannel().flatMap(messageChannel -> messageChannel.createMessage("Message has been added"));
+	}
+
+	private boolean hasPrefix(String content) {
+		return content.startsWith("!br ");
 	}
 
 	private boolean isBotAuthor(Message message) {

@@ -25,6 +25,8 @@ public class ReactionAddEventListener {
 
 	static {
 		emojiRoleMap.put("👍", 982449009278996491L);
+		emojiRoleMap.put("😭", 982449064455073862L);
+		emojiRoleMap.put("🙂", 982449132549570631L);
 	}
 
 	public ReactionAddEventListener(BotSettings botSettings) {
