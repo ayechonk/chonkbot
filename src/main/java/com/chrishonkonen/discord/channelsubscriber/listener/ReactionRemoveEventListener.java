@@ -1,11 +1,10 @@
 package com.chrishonkonen.discord.channelsubscriber.listener;
 
+import com.chrishonkonen.discord.channelsubscriber.common.BotSettings;
 import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.message.ReactionRemoveEvent;
 import discord4j.core.object.entity.Guild;
 import discord4j.core.object.entity.Member;
-import org.jetbrains.annotations.NotNull;
-import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -17,19 +16,22 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 @Component
 public class ReactionRemoveEventListener {
 	private static final Logger LOG = LoggerFactory.getLogger(ReactionRemoveEventListener.class);
+
+	private final BotSettings botSettings;
 
 	//	TODO: move this to a repository of some sort.
 	private static final Map<String, Long> emojiRoleMap = Collections.synchronizedMap(new HashMap<>());
 
 	static {
 		emojiRoleMap.put("👍", 982449009278996491L);
+	}
+
+	public ReactionRemoveEventListener(BotSettings botSettings) {
+		this.botSettings = botSettings;
 	}
 
 
@@ -61,6 +63,6 @@ public class ReactionRemoveEventListener {
 	}
 
 	private boolean isCorrectMessage(ReactionRemoveEvent reactionRemoveEvent) {
-		return reactionRemoveEvent.getMessageId().asLong() == 982393192764829757L;
+		return reactionRemoveEvent.getMessageId().asLong() == this.botSettings.subscriptionMessageId();
 	}
 }

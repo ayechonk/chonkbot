@@ -1,0 +1,8 @@
+<service>
+	<id>discord-channel-subscriber</id>
+	<description>desc</description>
+	<executable>java</executable>
+	<arguments>-jar channel-subscriber.jar</arguments>
+	<workingdirectory>C:\Apps\discord-channel-subscriber</workingdirectory>
+	<startmode>Automatic</startmode>
+</service>

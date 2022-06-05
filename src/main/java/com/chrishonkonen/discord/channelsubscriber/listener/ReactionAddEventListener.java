@@ -1,5 +1,6 @@
 package com.chrishonkonen.discord.channelsubscriber.listener;
 
+import com.chrishonkonen.discord.channelsubscriber.common.BotSettings;
 import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.message.ReactionAddEvent;
 import discord4j.core.object.entity.Member;
@@ -17,11 +18,17 @@ import java.util.Objects;
 public class ReactionAddEventListener {
 	private static final Logger LOG = LoggerFactory.getLogger(ReactionAddEventListener.class);
 
+	private final BotSettings botSettings;
+
 //	TODO: move this to a repository of some sort.
 	private static final Map<String, Long> emojiRoleMap = Collections.synchronizedMap(new HashMap<>());
 
 	static {
 		emojiRoleMap.put("👍", 982449009278996491L);
+	}
+
+	public ReactionAddEventListener(BotSettings botSettings) {
+		this.botSettings = botSettings;
 	}
 
 	public Mono<Void> handle(ReactionAddEvent reactionAddEvent) {
@@ -44,6 +51,6 @@ public class ReactionAddEventListener {
 	}
 
 	private boolean isCorrectMessage(ReactionAddEvent reactionAddEvent) {
-		return reactionAddEvent.getMessageId().asLong() == 982393192764829757L;
+		return reactionAddEvent.getMessageId().asLong() == this.botSettings.subscriptionMessageId();
 	}
 }

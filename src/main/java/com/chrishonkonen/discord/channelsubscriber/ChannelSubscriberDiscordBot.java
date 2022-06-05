@@ -1,32 +1,28 @@
 package com.chrishonkonen.discord.channelsubscriber;
 
+import com.chrishonkonen.discord.channelsubscriber.common.BotSettings;
 import com.chrishonkonen.discord.channelsubscriber.listener.MessageCreateEventListener;
 import com.chrishonkonen.discord.channelsubscriber.listener.ReactionAddEventListener;
 import com.chrishonkonen.discord.channelsubscriber.listener.ReactionRemoveEventListener;
 import discord4j.core.DiscordClient;
-import discord4j.core.DiscordClientBuilder;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.event.domain.message.ReactionAddEvent;
 import discord4j.core.event.domain.message.ReactionRemoveEvent;
-import discord4j.gateway.intent.Intent;
 import discord4j.gateway.intent.IntentSet;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 @Component
 public class ChannelSubscriberDiscordBot {
-	private final String token;
 
 	public ChannelSubscriberDiscordBot(
-		@Value("${token}") String token,
+		BotSettings botSettings,
 		MessageCreateEventListener messageCreateEventListener,
 		ReactionAddEventListener reactionAddEventListener,
 		ReactionRemoveEventListener reactionRemoveEventListener
 	) {
-		this.token = token;
 		DiscordClient
-			.create(token)
+			.create(botSettings.token())
 			.gateway()
 			.setEnabledIntents(IntentSet.all())
 			.withGateway(client -> {

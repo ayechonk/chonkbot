@@ -53,8 +53,18 @@
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jsr310</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
 	</dependencies>
+	<distributionManagement>
+		<repository>
+			<id>local-app</id>
+			<url>file:///c:/Apps/discord-channel-subscriber</url>
+		</repository>
+	</distributionManagement>
 
 	<build>
 		<plugins>
@@ -63,6 +73,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<finalName>${project.artifactId}</finalName>
 	</build>
 
 </project>
