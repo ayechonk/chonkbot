@@ -1,10 +1,10 @@
-package com.chrishonkonen.discord.channelsubscriber;
+package com.chrishonkonen.discord.chonkbot;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ChannelSubscriberApplicationTests {
+class ChonkBotTests {
 
 	@Test
 	void contextLoads() {

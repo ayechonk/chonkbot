@@ -1,4 +1,4 @@
-package com.chrishonkonen.discord.channelsubscriber;
+package com.chrishonkonen.discord.chonkbot;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -7,9 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class ChannelSubscriberApplication {
+public class ChonkBot {
 
-	public static void main(String[] args) { SpringApplication.run(ChannelSubscriberApplication.class, args);	}
+	public static void main(String[] args) { SpringApplication.run(ChonkBot.class, args);	}
 
 	@Bean
 	public ObjectMapper objectMapper(){

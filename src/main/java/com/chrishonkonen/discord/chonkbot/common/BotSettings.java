@@ -1,4 +1,4 @@
-package com.chrishonkonen.discord.channelsubscriber.common;
+package com.chrishonkonen.discord.chonkbot.common;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -1,5 +1,6 @@
-package com.chrishonkonen.discord.channelsubscriber.listener;
+package com.chrishonkonen.discord.chonkbot.listener;
 
+import com.chrishonkonen.discord.chonkbot.common.Function2;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.User;
@@ -27,8 +28,11 @@ public class MessageCreateEventListener {
 		LOG.info("Handling MessageCreateEvent");
 		return Mono.just(messageCreateEvent.getMessage())
 			.filter(message -> !message.getContent().isBlank() && this.hasPrefix(message.getContent()) && !this.isBotAuthor(message))
-			.zipWhen(message -> {
+			.flatMap(message -> {
 				String[] parts = message.getContent().split(" ");
+				if (parts.length < 3) {
+					return this.invalidMessage(message);
+				}
 				final String command = parts[1];
 				Function2<Message, String[], Mono<Message>> fn = this.mapOfCommands.get(command);
 				if (fn == null) {
@@ -40,13 +44,17 @@ public class MessageCreateEventListener {
 			.then();
 	}
 
+	private Mono<Message> invalidMessage(Message message) {
+		return message.getChannel().flatMap(messageChannel -> messageChannel.createMessage("The command is not valid."));
+	}
+
 	private Mono<Message> commandInvalid(Message message, String invalidCommand) {
 		LOG.info("Not a valid command: {}", invalidCommand);
 		return message.getChannel().flatMap(messageChannel -> messageChannel.createMessage("Not a valid command."));
 	}
 
 	private Mono<Message> addMessage(Message message, String[] args) {
-		LOG.info("Adding message {} to be watched.", args[1]);
+		LOG.info("Adding message {} to be watched.", args[2]);
 		return message.getChannel().flatMap(messageChannel -> messageChannel.createMessage("Message has been added"));
 	}
 

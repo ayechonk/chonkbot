@@ -1,9 +1,9 @@
-package com.chrishonkonen.discord.channelsubscriber;
+package com.chrishonkonen.discord.chonkbot;
 
-import com.chrishonkonen.discord.channelsubscriber.common.BotSettings;
-import com.chrishonkonen.discord.channelsubscriber.listener.MessageCreateEventListener;
-import com.chrishonkonen.discord.channelsubscriber.listener.ReactionAddEventListener;
-import com.chrishonkonen.discord.channelsubscriber.listener.ReactionRemoveEventListener;
+import com.chrishonkonen.discord.chonkbot.common.BotSettings;
+import com.chrishonkonen.discord.chonkbot.listener.MessageCreateEventListener;
+import com.chrishonkonen.discord.chonkbot.listener.ReactionAddEventListener;
+import com.chrishonkonen.discord.chonkbot.listener.ReactionRemoveEventListener;
 import discord4j.core.DiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.event.domain.message.ReactionAddEvent;
@@ -11,12 +11,10 @@ import discord4j.core.event.domain.message.ReactionRemoveEvent;
 import discord4j.gateway.intent.IntentSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 @Component
-@Profile("!test")
 public class ChannelSubscriberDiscordBot {
 	private final Logger LOG = LoggerFactory.getLogger(ChannelSubscriberDiscordBot.class);
 
